@@ -1,6 +1,7 @@
 package io.bk.ppmtool.services;
 
 import io.bk.ppmtool.domain.Project;
+import io.bk.ppmtool.exceptions.ProjectIdException;
 import io.bk.ppmtool.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,14 @@ public class ProjectService {
 
     public Project saveOrUpdateProject(Project project)
     {
-        // Logic
-        return projectRepository.save(project);
+
+        try {
+            project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
+            return projectRepository.save(project);
+        }catch (Exception ex)
+        {
+            throw new ProjectIdException("Project identifier '"+project.getProjectIdentifier()+"' already existing");
+        }
     }
 
 }
